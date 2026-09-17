@@ -38,13 +38,11 @@ pytest
 **Class imbalance.** I kept the class imbalance from the curated dataset because the assignment asks for it to be preserved. I didn't use oversampling or class weighting. Instead, I use precision, recall, and F1-score in the classification report so I can see how the model performs on each digit individually, rather than relying only on overall accuracy.
 
 **Deviations from the provided stub, and why:**
-- `training_step`, `validation_step`, and `predict_step` include a
-  `batch_idx` parameter. The stub in the assignment omits it, but Lightning's
-  `Trainer` calls these hooks with `(batch, batch_idx)`, so leaving it out
-  would break training.
-- The `predict` command's `--input-path` option was written as `--output-dir`
-  in the provided CLI stub. That looks like a copy-paste typo in the
+- `training_step`, `validation_step`, and `predict_step` include a `batch_idx` parameter. The stub in the assignment omits it, but Lightning's
+  `Trainer` calls these hooks with `(batch, batch_idx)`, so leaving it out would break training.
+- The `predict` command's `--input-path` option was written as `--output-dir` in the provided CLI stub. That looks like a copy-paste typo in the
   assignment template, so it's corrected here to `--input-path`.
+- I used a local environment to run the code, but I didn't include any setup instructions since the assessment didn't specify that they were required.
 
 ## Project structure
 
