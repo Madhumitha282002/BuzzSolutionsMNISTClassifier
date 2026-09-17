@@ -5,12 +5,8 @@ The problem statement asks for a deliberately imbalanced 3-class subset of MNIST
 random selection here uses numpy's Generator API seeded explicitly, so the same seed always produces the same curated set and the same train/val/test
 split.
 """
-
-from typing import Tuple
-
 import numpy as np
 import torch
-import numpy as np
 from lightning.pytorch import LightningDataModule
 from torch.utils.data import DataLoader, Dataset
 from typing import Tuple
