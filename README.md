@@ -29,14 +29,13 @@ pytest
 
 ## Design decisions
 
-**Reproducibility.** All random sampling uses `numpy.random.default_rng(seed)` rather than the global random state. `curate_indices` selects 3,500 images of "8", 1,200 of "0", and 300 of "5" from the MNIST training set, offsetting the seed by label so each class's sample is independent of the others. `split_indices` then reproducibly carves out 20% of that curated set for evaluation, and 20% of what remains for validation. Same seed in, same split out, every run.
+**Reproducibility.** I used `numpy.random.default_rng(seed)` for the random sampling instead of the global random state so that I can get the same results when I use the same seed. `curate_indices` selects 3,500 images of "8", 1,200 of "0", and 300 of "5" from the MNIST training set. I offset the seed for each label so that the sampling for one class doesn't affect the others. After that, `split_indices` uses the same approach to create the evaluation and validation splits. This means that running the process again with the same seed gives me the same splits.
 
-**Label remapping.** The model only has 3 output units, so raw MNIST labels {0, 5, 8} are remapped to class indices {0, 1, 2} in `DigitDataset`.`LABELS` and `LABEL_TO_INDEX` in `data.py` are the single source of truth for that mapping so it's never duplicated as magic numbers elsewhere.
+**Label remapping.** Since the model is only classifying 0, 5, and 8, I remap the original MNIST labels `{0, 5, 8}` to `{0, 1, 2}` before passing them to the model. The `LABELS` and `LABEL_TO_INDEX` variables in `data.py` keep this mapping in one place instead of having the mapping repeated throughout the code.
 
-**Model architecture.** With roughly 5,000 total training images spread unevenly across three classes, a deep network would overfit almost immediately, especially on the 300-image "5" class. The model is two small convolutional blocks (16 then 32 filters) followed by two fully connected layers, with dropout after both the convolutional stack and the hidden dense layer. This keeps the parameter count low relative to the dataset size while still giving the model enough capacity to separate three fairly distinct digit shapes.
+**Model architecture.** I used a small CNN with two convolutional layers (16 and 32 filters), followed by two fully connected layers. I also added dropout to help with overfitting. Since the dataset is relatively small and the classes are unevenly distributed, especially with only 300 examples of "5", I wanted to keep the model fairly simple rather than using a much deeper network.
 
-**Class imbalance.** The assignment doesn't ask for the imbalance to be corrected, only preserved and worked with, so no oversampling or class
-weighting is applied. `evaluate`'s classification report (precision/recall/F1 per class) is the right lens here: it will make it obvious if the model is just learning to predict "8" most of the time, which plain accuracy would hide.
+**Class imbalance.** I kept the class imbalance from the curated dataset because the assignment asks for it to be preserved. I didn't use oversampling or class weighting. Instead, I use precision, recall, and F1-score in the classification report so I can see how the model performs on each digit individually, rather than relying only on overall accuracy.
 
 **Deviations from the provided stub, and why:**
 - `training_step`, `validation_step`, and `predict_step` include a
